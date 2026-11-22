@@ -185,3 +185,11 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; margin: 10
   .lim { grid-column: 1 / -1; }
 }
 @media (prefers-reduced-motion: reduce) { .theme button { transition: none; } .card { transition: none; } .card:hover { transform: none; } }
+
+/* video editorial */
+.vframe { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 16px; overflow: hidden; background: var(--code-bg); border: 1px solid var(--line); }
+.vframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vlink { display: inline-block; margin-top: 10px; font-weight: 600; font-size: 14px; text-decoration: none; }
+.vlink:hover { text-decoration: underline; }
+.vsoon { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-radius: 16px; border: 1px dashed var(--line); background: var(--surface); color: var(--muted); font-weight: 500; }
+.vsoon svg { width: 26px; height: 26px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }

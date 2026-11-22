@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
 <header class="topbar">
@@ -52,6 +52,9 @@
   <section class="stmt"><h2>Условие</h2>
     <p>Дан массив $a_1, \dots, a_n$ и $q$ запросов двух типов: <b>1 i j</b> — присвоить $a_i = j$; <b>2 l u</b> — вывести XOR значений XOR всех подотрезков отрезка $[l, u]$.</p>
     <div class="lims"><span>n, q ≤ 2·10⁵</span><span>0 ≤ aᵢ ≤ 10⁹</span></div>
+  </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vsoon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>Видеоразбор скоро появится…</span></div>
   </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Элемент $a_i$ входит ровно в $(i-l+1)(u-i+1)$ подотрезков отрезка $[l, u]$. В XOR он остаётся, только если это число нечётно.</p>
@@ -145,6 +148,9 @@ int main() {
     <p>Даны цитируемости $N$ статей. Найдите h-индекс: наибольшее $H$, такое что есть $H$ статей с цитируемостью не меньше $H$.</p>
     <div class="lims"><span>N ≤ 500 000</span><span>cᵢ ≤ 10⁶</span></div>
   </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vsoon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>Видеоразбор скоро появится…</span></div>
+  </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Отсортируйте по убыванию: $c_1 \ge c_2 \ge \dots \ge c_N$. Ответ — наибольшее $i$, для которого $c_i \ge i$.</p>
     <p>Подзадач нет, баллы даются за пройденные тесты, поэтому ниже два уровня решения.</p>
@@ -197,6 +203,9 @@ int main() {
   <section class="stmt"><h2>Условие</h2>
     <p>Массив $A$ из $N$ чисел и число $K$. Запросы: <b>1 i₁ … iₖ</b> — циклически сдвинуть влево значения на этих $K$ позициях; <b>2 l r m</b> — сумма элементов всех подотрезков длины $m$ внутри $[l, r]$ (элемент считается столько раз, во сколько подотрезков входит).</p>
     <div class="lims"><span>N, Q ≤ 100 000</span><span>K ≤ 10</span></div>
+  </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vsoon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>Видеоразбор скоро появится…</span></div>
   </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Элемент на позиции $i \in [l, r]$ входит ровно в $w(i)$ подотрезков длины $m$:</p>
@@ -328,6 +337,9 @@ int main() {
     <p>Сетка $R \times C$: «#» — остров, «.» — вода. Подлодка стартовала в неизвестной клетке воды и сделала $M$ ходов по строке из N/E/S/W, где «?» — неизвестное направление. Подлодка всё время в воде. Сколько клеток могут быть её текущим положением?</p>
     <div class="lims"><span>R, C ≤ 500</span><span>M ≤ 5000</span></div>
   </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vsoon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>Видеоразбор скоро появится…</span></div>
+  </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Храним не пути, а множество $P_t$ клеток, где лодка может быть после $t$ сигналов. $P_0$ — вся вода, ответ — $|P_M|$.</p>
     <p>Переход: $p \in P_t$ ⇔ $p$ — вода и $p - \delta \in P_{t-1}$ для направления $\delta$, разрешённого $t$-м сигналом. Здесь $\delta$ — сдвиг на один шаг: N $=(-1,0)$, E $=(0,+1)$, S $=(+1,0)$, W $=(0,-1)$.</p>
@@ -408,6 +420,10 @@ int main() {
     <p>$N$ картин, у картины размер $A_i$ и ценность $B_i$. Выберите непустое множество картин, максимизируя $S - (A_{\max} - A_{\min})$, где $S$ — сумма ценностей выбранных.</p>
     <div class="lims"><span>N ≤ 500 000</span><span>Aᵢ ≤ 10¹⁵</span><span>Bᵢ ≤ 10⁹</span></div>
   </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vframe"><iframe src="https://www.youtube-nocookie.com/embed/jRdiTFtBYvg" title="Видеоразбор задачи E" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <a class="vlink" href="https://youtu.be/jRdiTFtBYvg" target="_blank" rel="noopener">Смотреть на YouTube ↗</a>
+  </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Отсортируем по $A$. Если выбраны картины с минимумом $A_i$ и максимумом $A_j$, выгодно взять <i>все</i> картины между ними: каждая добавляет $B \ge 1$, а штраф не меняется. Значит, ответ — лучший отрезок $[i, j]$ отсортированного массива.</p>
   </div></section>
@@ -450,6 +466,9 @@ int main() {
   <section class="stmt"><h2>Условие</h2>
     <p>$N$ учеников в ряд, у $i$-го результат $A_i$. Любой отрезок из двух и более соседей может «списать»: всем на нём ставится максимум отрезка. Это можно делать сколько угодно раз. Ученику $i$ нужно ровно $B_i$. Найдите максимальное число учеников, которые могут сдать одновременно.</p>
     <div class="lims"><span>2 ≤ N ≤ 10⁵</span><span>Aᵢ, Bᵢ ≤ 10⁹</span><span>1 с</span></div>
+  </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vsoon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>Видеоразбор скоро появится…</span></div>
   </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Ученик $i$ может получить $B_i$ из «источника» $j$, если $A_j = B_i$ и максимум $A$ между $i$ и $j$ равен $B_i$ (нет «стены» с большим числом).</p>
@@ -536,6 +555,9 @@ int main() {
   <section class="stmt"><h2>Условие</h2>
     <p>Строка из $N$ голосов «C» (за Капитана) и «T» (за Тони). Голоса считают дважды: слева направо и справа налево. Капитан доволен, если ни в какой момент подсчёта у него не меньше голосов, чем у Тони. Для $Q$ запросов $[L, R]$ (голосуют только фанаты с $L$ по $R$) найдите минимальное число голосов, которые нужно аннулировать.</p>
     <div class="lims"><span>N, Q ≤ 500 000</span><span>пример: CCCTTTTTTCC → 4, 6, 3</span></div>
+  </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vsoon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>Видеоразбор скоро появится…</span></div>
   </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Положим $T = +1$, $C = -1$. Ответ — лучшая пара непересекающихся префикса и суффикса отрезка (пустые разрешены):</p>
@@ -633,6 +655,9 @@ int main() {
     <p>$N$ резервуаров сверху вниз, у $i$-го диаметр $D_i$ и вместимость $C_i$. Лишняя вода переливается в ближайший ниже резервуар со <i>строго большим</i> диаметром, а если такого нет — в землю (ответ 0). Запросы независимы: в каком резервуаре остановится вода, если налить $V$ литров в резервуар $R$?</p>
     <div class="lims"><span>N ≤ 10⁵</span><span>Q ≤ 2·10⁵</span><span>Cᵢ ≤ 1000</span><span>Dᵢ, Vᵢ ≤ 10⁹</span></div>
   </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vsoon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>Видеоразбор скоро появится…</span></div>
+  </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Для каждого $i$ найдём $nxt_i$ — ближайший ниже со строго большим диаметром (монотонный стек). Связи $nxt$ образуют дерево с корнем 0 («земля»), и вода из $R$ идёт по пути к корню, заполняя вместимости по очереди.</p>
   </div></section>
@@ -713,6 +738,9 @@ int main() {
   <section class="stmt"><h2>Условие</h2>
     <p>Компания — дерево из $N$ сотрудников с корнем 0, у каждого один из $K$ языков. Выбираем лидера $v$: команда — сотрудники его поддерева с тем же языком. Можно менять местами сотрудника поддерева с другим языком и сотрудника вне поддерева с языком лидера, если они на одном уровне; их подчинённые остаются на местах. Найдите максимальный размер команды $P$ и минимальное число обменов $S$ для него.</p>
     <div class="lims"><span>N ≤ 10⁵</span><span>K ≤ N</span><span>4 с</span></div>
+  </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vsoon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>Видеоразбор скоро появится…</span></div>
   </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Обмен не выходит за уровень, поэтому уровни независимы. Для лидера $v$ с языком $c$ на уровне $d$: $s_d$ — мест в поддереве, $t_d$ — всего людей с языком $c$, $a_d$ — уже в команде. Тогда</p>
@@ -856,6 +884,9 @@ int main() {
     <p>В ряду $N$ участников из $T$ команд (номера $0..T-1$, каждая встречается). Нужно пропустить ровно один отрезок $[\ell, r]$ подряд стоящих так, чтобы среди оставшихся каждая команда встречалась не больше одного раза, а пропущенных было как можно меньше. Выведите $\ell$ и $r$ (с нуля); подходит любой оптимальный ответ.</p>
     <div class="lims"><span>1 ≤ T &lt; N ≤ 500 000</span><span>2 с</span></div>
   </section>
+  <section class="video"><h2>Видеоразбор</h2>
+    <div class="vsoon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg><span>Видеоразбор скоро появится…</span></div>
+  </section>
   <section><h2>Ключевая идея</h2><div class="key">
     <p>Оставшиеся — префикс $[0, \ell)$ и суффикс $(r, N)$. Если $r(\ell)$ — лучший $r$ для данного $\ell$, то $r(\ell)$ не убывает: при росте префикса суффикс может только укоротиться. Поэтому работают два указателя.</p>
   </div></section>
@@ -928,10 +959,10 @@ int main() {
   </main>
 </div>
 
-<script src="js/mathjax-config.js?v=2"></script>
+<script src="js/mathjax-config.js?v=3"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
-<script src="js/main.js?v=2"></script>
+<script src="js/main.js?v=3"></script>
 </body>
 </html>
