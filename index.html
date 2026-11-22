@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Code Jam Round 1 Editorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <a class="brand" href="#overview"><b>Code Jam R1</b><span>IOI-формат · 10 задач · разборы</span></a>
+    <input class="search" id="q" type="search" placeholder="Поиск: задача или тег" aria-label="Поиск по задачам">
+    <ul class="plist" id="plist"></ul>
+    <div class="theme" role="group" aria-label="Тема">
+      <button type="button" data-t="system" aria-pressed="true">Авто</button>
+      <button type="button" data-t="light" aria-pressed="false">Светлая</button>
+      <button type="button" data-t="dark" aria-pressed="false">Тёмная</button>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div id="overview">
+      <div class="hero">
+        <span class="eyebrow">Code Jam Round 1 · IOI style</span>
+        <h1>Разборы десяти задач: от первой подзадачи до полного решения</h1>
+        <p>Для каждой задачи: короткое условие, главная идея, путь по подзадачам с доказательствами и полное решение на C++. Каждое решение проверено на примерах из условия и перебором на случайных тестах.</p>
+        <div class="stats"><span><b>10</b> задач</span><span><b id="nsub">0</b> подзадач</span><span>решено: <b id="ndone">0</b> из 10</span></div>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="howto">
+        <b>Как читать разбор</b>
+        <span>Подзадачи открываются по клику. Попробуйте решить следующую подзадачу сами, прежде чем открывать её. Полное решение отмечено ★, а отметка «Решено» сохраняется только в вашем браузере.</span>
+      </div>
+    </div>
+
+<!-- ============================ A ============================ -->
+<article class="prob" id="A" hidden data-name="XORanges" data-src="eJOI 2019, день 1" data-tags="XOR,чётность,дерево Фенвика" data-pts="12,18,25,20,25*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>Дан массив $a_1, \dots, a_n$ и $q$ запросов двух типов: <b>1 i j</b> — присвоить $a_i = j$; <b>2 l u</b> — вывести XOR значений XOR всех подотрезков отрезка $[l, u]$.</p>
+    <div class="lims"><span>n, q ≤ 2·10⁵</span><span>0 ≤ aᵢ ≤ 10⁹</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Элемент $a_i$ входит ровно в $(i-l+1)(u-i+1)$ подотрезков отрезка $[l, u]$. В XOR он остаётся, только если это число нечётно.</p>
+    <p>Отсюда ответ: при чётной длине $u-l+1$ он равен $0$, при нечётной — $a_l \oplus a_{l+2} \oplus \dots \oplus a_u$.</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Подзадача 1</span><span class="pts">12 б.</span><span class="lim">n, q ≤ 100</span></summary><div class="sb">
+      <p>Перебор по определению: для каждого запроса перебираем пары $l \le x \le y \le u$, XOR подотрезка наращиваем при сдвиге $y$.</p><span class="cx">O(q·n²)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 2</span><span class="pts">18 б.</span><span class="lim">n, q ≤ 500, без изменений</span></summary><div class="sb">
+      <p>Тот же перебор, около $1.25 \cdot 10^8$ простых операций. Можно взять префиксные XOR: XOR подотрезка $[x, y]$ равен $p_y \oplus p_{x-1}$.</p><span class="cx">O(q·n²)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 3</span><span class="pts">25 б.</span><span class="lim">n, q ≤ 5000</span></summary><div class="sb">
+      <p>Используем наблюдение про чётность: для каждого $i \in [l, u]$ проверяем, нечётно ли $(i-l+1)(u-i+1)$. Изменение — просто присваивание.</p><span class="cx">O(q·n)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 4</span><span class="pts">20 б.</span><span class="lim">без изменений</span></summary><div class="sb">
+      <p>Префиксный XOR с шагом 2: $px_i = px_{i-2} \oplus a_i$. При нечётной длине ответ $px_u \oplus px_{l-2}$.</p>
+      <div class="why">$px_u$ — XOR позиций той же чётности, что $u$. При нечётной длине $l$ и $u$ одной чётности, и разность оставляет ровно $l, l+2, \dots, u$.</div><span class="cx">O(n + q)</span></div></details>
+    <details class="sub full"><summary><span class="sn">Подзадача 5</span><span class="pts">25 б.</span><span class="lim">без ограничений</span></summary><div class="sb">
+      <p>Два дерева Фенвика с операцией $\oplus$: одно для чётных позиций, другое для нечётных. Изменение $a_i$ — «добавить» $a_i^{old} \oplus a_i^{new}$ в дерево нужной чётности. Запрос — XOR двух префиксов в дереве той же чётности, что $l$.</p>
+      <div class="why">У $\oplus$ каждый элемент сам себе обратный: XOR на отрезке равен $\mathrm{pref}(r) \oplus \mathrm{pref}(l-1)$, а замена $a$ на $b$ — это добавление $a \oplus b$.</div><span class="cx">O((n + q) log n)</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p><b>Сколько подотрезков содержат $a_i$.</b> Подотрезок $[x, y] \subseteq [l, u]$ содержит $i$, когда $l \le x \le i$ и $i \le y \le u$. Начало выбирается $i-l+1$ способами, конец — $u-i+1$, независимо.</p>
+    <p><b>Важна только чётность.</b> $v \oplus v = 0$, поэтому элемент, вошедший в XOR $c$ раз, даёт $a_i$ при нечётном $c$ и $0$ при чётном.</p>
+    <p><b>Чётная длина.</b> $(i-l+1) + (u-i+1) = L + 1$ нечётно, значит один множитель чётен для каждого $i$. Ответ $0$.</p>
+    <p><b>Нечётная длина.</b> Сумма множителей чётна, значит они одной чётности. Оба нечётны ⇔ $i \equiv l \pmod 2$. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>A.cpp · 60 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using i64 = long long;
+
+struct Fenwick {
+    int n;
+    std::vector&lt;int&gt; a;
+    
+    Fenwick(int n_ = 0) : n(n_), a(n_) {}
+    
+    void add(int x, int v) {
+        for (int i = x + 1; i &lt;= n; i += i &amp; -i) {
+            a[i - 1] ^= v;
+        }
+    }
+    
+    int sum(int x) {
+        int ans = 0;
+        for (int i = x; i &gt; 0; i -= i &amp; -i) {
+            ans ^= a[i - 1];
+        }
+        return ans;
+    }
+};
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int n, q;
+    std::cin &gt;&gt; n &gt;&gt; q;
+    
+    std::vector&lt;int&gt; a(n);
+    std::array&lt;Fenwick, 2&gt; fen{Fenwick(n), Fenwick(n)};
+    for (int i = 0; i &lt; n; i++) {
+        std::cin &gt;&gt; a[i];
+        fen[i % 2].add(i, a[i]);
+    }
+    
+    while (q--) {
+        int t, x, y;
+        std::cin &gt;&gt; t &gt;&gt; x &gt;&gt; y;
+        
+        if (t == 1) {
+            int i = x - 1;
+            fen[i % 2].add(i, a[i] ^ y);
+            a[i] = y;
+        } else {
+            int l = x - 1, r = y - 1;
+            if ((r - l + 1) % 2 == 0) {
+                std::cout &lt;&lt; 0 &lt;&lt; &quot;\n&quot;;
+            } else {
+                auto &amp;f = fen[l % 2];
+                std::cout &lt;&lt; (f.sum(r + 1) ^ f.sum(l)) &lt;&lt; &quot;\n&quot;;
+            }
+        }
+    }
+    
+    return 0;
+}</code></pre></div></section>
+</article>
+
+<!-- ============================ B ============================ -->
+<article class="prob" id="B" hidden data-name="Hindeks" data-src="COCI 2017/2018" data-tags="сортировка,подсчёт" data-pts="—,—*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>Даны цитируемости $N$ статей. Найдите h-индекс: наибольшее $H$, такое что есть $H$ статей с цитируемостью не меньше $H$.</p>
+    <div class="lims"><span>N ≤ 500 000</span><span>cᵢ ≤ 10⁶</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Отсортируйте по убыванию: $c_1 \ge c_2 \ge \dots \ge c_N$. Ответ — наибольшее $i$, для которого $c_i \ge i$.</p>
+    <p>Подзадач нет, баллы даются за пройденные тесты, поэтому ниже два уровня решения.</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Частично</span><span class="lim">небольшие тесты</span></summary><div class="sb">
+      <p>Перебираем $H$ от $N$ вниз и для каждого считаем, сколько статей имеют цитируемость $\ge H$. Первое подходящее $H$ — ответ.</p><span class="cx">O(N²)</span></div></details>
+    <details class="sub full"><summary><span class="sn">Полное</span><span class="lim">N ≤ 500 000</span></summary><div class="sb">
+      <p>Сортировка и проверка $c_i \ge i$. Без сортировки: значения не больше $10^6$, считаем $cnt_v$ и идём от больших $H$ к меньшим, накапливая число статей с цитируемостью $\ge H$.</p>
+      <span class="cx">O(N log N) или O(N + max c)</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p>Назовём $H$ допустимым, если есть $H$ статей с цитируемостью $\ge H$. <b>Лемма:</b> $H$ допустимо ⇔ $c_H \ge H$.</p>
+    <p>(⇐) Статьи $1, \dots, H$ имеют цитируемость $\ge c_H \ge H$. (⇒) Если есть $H$ статей с цитируемостью $\ge H$, то $H$-я по величине цитируемость не меньше $H$.</p>
+    <p>Если $H$ допустимо, то и $H-1$ тоже. Поэтому ответ — наибольшее $i$ с $c_i \ge i$. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>B.cpp · 29 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using i64 = long long;
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int n;
+    std::cin &gt;&gt; n;
+    
+    std::vector&lt;int&gt; c(n);
+    for (int i = 0; i &lt; n; i++) {
+        std::cin &gt;&gt; c[i];
+    }
+    
+    std::sort(c.begin(), c.end(), std::greater&lt;&gt;());
+    
+    int ans = 0;
+    for (int i = 0; i &lt; n; i++) {
+        if (c[i] &gt;= i + 1) {
+            ans = i + 1;
+        }
+    }
+    
+    std::cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    
+    return 0;
+}</code></pre></div></section>
+</article>
+
+<!-- ============================ C ============================ -->
+<article class="prob" id="C" hidden data-name="AddK" data-src="eJOI 2021, день 1" data-tags="префиксные суммы,дерево Фенвика" data-pts="36,56,8*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>Массив $A$ из $N$ чисел и число $K$. Запросы: <b>1 i₁ … iₖ</b> — циклически сдвинуть влево значения на этих $K$ позициях; <b>2 l r m</b> — сумма элементов всех подотрезков длины $m$ внутри $[l, r]$ (элемент считается столько раз, во сколько подотрезков входит).</p>
+    <div class="lims"><span>N, Q ≤ 100 000</span><span>K ≤ 10</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Элемент на позиции $i \in [l, r]$ входит ровно в $w(i)$ подотрезков длины $m$:</p>
+    <p class="mj">$$w(i) = \min(i-l+1,\ r-i+1,\ m,\ r-l+2-m).$$</p>
+    <p>Вес — «трапеция»: растёт на 1 от левого края, потом постоянен, потом убывает. На каждом куске он линеен, поэтому хватает сумм $\sum a_i$ и $\sum i \cdot a_i$.</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Подзадача 1</span><span class="pts">36 б.</span><span class="lim">N, Q ≤ 10 000, K = 1</span></summary><div class="sb">
+      <p>При $K = 1$ сдвиг ничего не меняет. Для запроса типа 2 проходим $i$ от $l$ до $r$ и прибавляем $a_i \cdot w(i)$.</p><span class="cx">O(N·Q)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 2</span><span class="pts">56 б.</span><span class="lim">N, Q ≤ 100 000, K = 1</span></summary><div class="sb">
+      <p>Префиксы $S_i = \sum_{j \le i} a_j$ и $T_i = \sum_{j \le i} j \cdot a_j$. Пусть $s = \min(m, r-l+2-m)$. Ответ складывается из трёх кусков:</p>
+      <p class="mj">$$\sum_{i=l}^{l+s-2}(i-l+1)a_i + s\sum_{i=l+s-1}^{r-s+1} a_i + \sum_{i=r-s+2}^{r}(r-i+1)a_i,$$</p>
+      <p>а каждый кусок выражается через $S$ и $T$, например:</p>
+      <p class="mj">$$\sum_{i=x}^{y}(i-l+1)a_i = (T_y - T_{x-1}) - (l-1)(S_y - S_{x-1}).$$</p>
+      <p>Все суммы — в long long.</p>
+      <span class="cx">O(N + Q)</span></div></details>
+    <details class="sub full"><summary><span class="sn">Подзадача 3</span><span class="pts">8 б.</span><span class="lim">2 ≤ K ≤ 10</span></summary><div class="sb">
+      <p>Формула та же, но массив меняется. Вместо $S$ и $T$ — два дерева Фенвика: для $a_i$ и для $i \cdot a_i$. Сдвиг — это $K$ точечных изменений.</p>
+      <span class="cx">O((N + Q·K) log N)</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p>Подотрезок длины $m$ задаётся началом $s$. Он лежит в $[l, r]$ ⇔ $l \le s \le r-m+1$ и содержит $i$ ⇔ $i-m+1 \le s \le i$. Число таких $s$:</p>
+    <p class="mj">$$w(i) = \min(i,\ r-m+1) - \max(l,\ i-m+1) + 1 = \min(i-l+1,\ m,\ r-l+2-m,\ r-i+1).$$</p>
+    <p>На каждом из трёх участков $w$ имеет вид $\alpha i + \beta$, поэтому сумма $\sum w(i) a_i$ сводится к $\sum a_i$ и $\sum i \cdot a_i$ на отрезках. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>C.cpp · 98 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using i64 = long long;
+
+template &lt;typename T&gt;
+struct Fenwick {
+    int n;
+    std::vector&lt;T&gt; a;
+    
+    Fenwick(int n_ = 0) {
+        init(n_);
+    }
+    
+    void init(int n_) {
+        n = n_;
+        a.assign(n, T{});
+    }
+    
+    void add(int x, const T &amp;v) {
+        for (int i = x + 1; i &lt;= n; i += i &amp; -i) {
+            a[i - 1] = a[i - 1] + v;
+        }
+    }
+    
+    T sum(int x) {
+        T ans{};
+        for (int i = x; i &gt; 0; i -= i &amp; -i) {
+            ans = ans + a[i - 1];
+        }
+        return ans;
+    }
+    
+    T rangeSum(int l, int r) {
+        return sum(r) - sum(l);
+    }
+};
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int n, k;
+    std::cin &gt;&gt; n &gt;&gt; k;
+    
+    std::vector&lt;i64&gt; a(n + 1);
+    Fenwick&lt;i64&gt; fa(n), fia(n);
+    for (int i = 1; i &lt;= n; i++) {
+        std::cin &gt;&gt; a[i];
+        fa.add(i - 1, a[i]);
+        fia.add(i - 1, i * a[i]);
+    }
+    
+    auto S = [&amp;](int x, int y) -&gt; i64 {
+        return x &gt; y ? 0 : fa.rangeSum(x - 1, y);
+    };
+    auto T = [&amp;](int x, int y) -&gt; i64 {
+        return x &gt; y ? 0 : fia.rangeSum(x - 1, y);
+    };
+    
+    int q;
+    std::cin &gt;&gt; q;
+    
+    std::vector&lt;int&gt; p(k);
+    std::vector&lt;i64&gt; v(k);
+    while (q--) {
+        int t;
+        std::cin &gt;&gt; t;
+        
+        if (t == 1) {
+            for (int j = 0; j &lt; k; j++) {
+                std::cin &gt;&gt; p[j];
+                v[j] = a[p[j]];
+            }
+            for (int j = 0; j &lt; k; j++) {
+                i64 nv = v[(j + 1) % k];
+                i64 d = nv - a[p[j]];
+                a[p[j]] = nv;
+                fa.add(p[j] - 1, d);
+                fia.add(p[j] - 1, p[j] * d);
+            }
+        } else {
+            int l, r, m;
+            std::cin &gt;&gt; l &gt;&gt; r &gt;&gt; m;
+            
+            int len = r - l + 1;
+            int s = std::min(m, len - m + 1);
+            
+            i64 ans = 0;
+            ans += T(l, l + s - 2) - 1LL * (l - 1) * S(l, l + s - 2);
+            ans += 1LL * s * S(l + s - 1, r - s + 1);
+            ans += 1LL * (r + 1) * S(r - s + 2, r) - T(r - s + 2, r);
+            
+            std::cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+        }
+    }
+    
+    return 0;
+}</code></pre></div></section>
+</article>
+
+<!-- ============================ D ============================ -->
+<article class="prob" id="D" hidden data-name="Nautilus" data-src="BOI 2019, день 1" data-tags="DP по сетке,bitset" data-pts="29,37,34*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>Сетка $R \times C$: «#» — остров, «.» — вода. Подлодка стартовала в неизвестной клетке воды и сделала $M$ ходов по строке из N/E/S/W, где «?» — неизвестное направление. Подлодка всё время в воде. Сколько клеток могут быть её текущим положением?</p>
+    <div class="lims"><span>R, C ≤ 500</span><span>M ≤ 5000</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Храним не пути, а множество $P_t$ клеток, где лодка может быть после $t$ сигналов. $P_0$ — вся вода, ответ — $|P_M|$.</p>
+    <p>Переход: $p \in P_t$ ⇔ $p$ — вода и $p - \delta \in P_{t-1}$ для направления $\delta$, разрешённого $t$-м сигналом. Здесь $\delta$ — сдвиг на один шаг: N $=(-1,0)$, E $=(0,+1)$, S $=(+1,0)$, W $=(0,-1)$.</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Подзадача 1</span><span class="pts">29 б.</span><span class="lim">R, C, M ≤ 100, нет «?»</span></summary><div class="sb">
+      <p>Путь известен. Перебираем стартовую клетку воды и моделируем $M$ ходов; если лодка ни разу не вышла на остров или за край — отмечаем конечную клетку.</p><span class="cx">O(R·C·M) ≈ 10⁶</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 2</span><span class="pts">37 б.</span><span class="lim">R, C, M ≤ 100</span></summary><div class="sb">
+      <p>Массив $can_{r,c}$ — это $P_t$. На каждом шаге клетка достижима, если это вода и в неё можно прийти из достижимой клетки текущим ходом («?» — любым из четырёх).</p><span class="cx">O(R·C·M·4) = 4·10⁶</span></div></details>
+    <details class="sub full"><summary><span class="sn">Подзадача 3</span><span class="pts">34 б.</span><span class="lim">R, C ≤ 500, M ≤ 5000</span></summary><div class="sb">
+      <p>Тот же переход — $1.25 \cdot 10^9$ операций, слишком медленно. Храним строку как <code>std::bitset&lt;500&gt;</code>. Ход E — сдвиг строки на 1 бит влево (<code>&lt;&lt; 1</code>), W — вправо, N — взять строку ниже, S — строку выше. «?» — OR всех вариантов. После хода — AND с маской воды.</p>
+      <div class="why">Это ровно тот же переход для $P_t$, только 64 клетки обрабатываются одной машинной операцией.</div><span class="cx">O(R·C·M / 64)</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p>Допустимый путь длины $t$, заканчивающийся в $p$, — это допустимый путь длины $t-1$, заканчивающийся в $p - \delta$, плюс последний шаг $\delta$ в воду.</p>
+    <p>(⇒) Если лодка в $p$ после $t$ сигналов, то до последнего шага она была в $p - \delta \in P_{t-1}$. (⇐) Если $p - \delta \in P_{t-1}$ и $p$ — вода, продлеваем путь до $p - \delta$ шагом $\delta$. По индукции $P_t$ — ровно множество возможных клеток. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>D.cpp · 55 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using i64 = long long;
+
+constexpr int W = 500;
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int r, c, m;
+    std::cin &gt;&gt; r &gt;&gt; c &gt;&gt; m;
+    
+    std::vector&lt;std::bitset&lt;W&gt;&gt; water(r);
+    for (int i = 0; i &lt; r; i++) {
+        std::string s;
+        std::cin &gt;&gt; s;
+        for (int j = 0; j &lt; c; j++) {
+            water[i][j] = s[j] == &#x27;.&#x27;;
+        }
+    }
+    
+    std::string sig;
+    std::cin &gt;&gt; sig;
+    
+    auto cur = water;
+    std::vector&lt;std::bitset&lt;W&gt;&gt; nxt(r);
+    for (char ch : sig) {
+        for (int i = 0; i &lt; r; i++) {
+            std::bitset&lt;W&gt; b;
+            if (ch == &#x27;E&#x27; || ch == &#x27;?&#x27;) {
+                b |= cur[i] &lt;&lt; 1;
+            }
+            if (ch == &#x27;W&#x27; || ch == &#x27;?&#x27;) {
+                b |= cur[i] &gt;&gt; 1;
+            }
+            if ((ch == &#x27;N&#x27; || ch == &#x27;?&#x27;) &amp;&amp; i + 1 &lt; r) {
+                b |= cur[i + 1];
+            }
+            if ((ch == &#x27;S&#x27; || ch == &#x27;?&#x27;) &amp;&amp; i &gt; 0) {
+                b |= cur[i - 1];
+            }
+            nxt[i] = b &amp; water[i];
+        }
+        std::swap(cur, nxt);
+    }
+    
+    int ans = 0;
+    for (int i = 0; i &lt; r; i++) {
+        ans += cur[i].count();
+    }
+    std::cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+    
+    return 0;
+}</code></pre></div></section>
+</article>
+
+<!-- ============================ E ============================ -->
+<article class="prob" id="E" hidden data-name="Art Exhibition" data-src="JOI 2018, финал" data-tags="сортировка,префиксные суммы" data-pts="10,20,20,50*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>$N$ картин, у картины размер $A_i$ и ценность $B_i$. Выберите непустое множество картин, максимизируя $S - (A_{\max} - A_{\min})$, где $S$ — сумма ценностей выбранных.</p>
+    <div class="lims"><span>N ≤ 500 000</span><span>Aᵢ ≤ 10¹⁵</span><span>Bᵢ ≤ 10⁹</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Отсортируем по $A$. Если выбраны картины с минимумом $A_i$ и максимумом $A_j$, выгодно взять <i>все</i> картины между ними: каждая добавляет $B \ge 1$, а штраф не меняется. Значит, ответ — лучший отрезок $[i, j]$ отсортированного массива.</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Подзадача 1</span><span class="pts">10 б.</span><span class="lim">N ≤ 16</span></summary><div class="sb">
+      <p>Перебираем все $2^N - 1$ непустых подмножеств и для каждого считаем $S$, $A_{\max}$ и $A_{\min}$.</p><span class="cx">O(2ᴺ·N)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 2</span><span class="pts">20 б.</span><span class="lim">N ≤ 300</span></summary><div class="sb">
+      <p>Сортируем по $A$ и перебираем пары $i \le j$; сумму $B$ на отрезке считаем циклом.</p><span class="cx">O(N³)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 3</span><span class="pts">20 б.</span><span class="lim">N ≤ 5000</span></summary><div class="sb">
+      <p>Префиксные суммы $P_k = B_1 + \dots + B_k$: значение отрезка $(P_j - P_{i-1}) - (A_j - A_i)$ за O(1).</p><span class="cx">O(N²)</span></div></details>
+    <details class="sub full"><summary><span class="sn">Подзадача 4</span><span class="pts">50 б.</span><span class="lim">без ограничений</span></summary><div class="sb">
+      <p>Перепишем: значение $= (P_j - A_j) + (A_i - P_{i-1})$. Первая часть зависит только от $j$, вторая — только от $i$. Для каждого $j$ нужен $\max_{i \le j}(A_i - P_{i-1})$ — поддерживаем его на ходу.</p>
+      <div class="why">Порядок важен: сначала обновляем максимум новым кандидатом $i = j$ (пока $P$ ещё равно $P_{j-1}$), потом прибавляем $B_j$. Вариант $i = j$ — одна картина, значение $B_j$.</div>
+      <span class="cx">O(N log N) из-за сортировки</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p>Пусть в оптимальном наборе минимальный размер у картины $i$, максимальный — у $j$ (после сортировки). Любая картина $k$ с $i < k < j$ имеет $A_i \le A_k \le A_j$: если её добавить, $A_{\max} - A_{\min}$ не изменится, а $S$ вырастет на $B_k \ge 1$.</p>
+    <p>Значит, существует оптимальный ответ из всех картин отрезка $[i, j]$, и перебирать нужно только отрезки. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>E.cpp · 16 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using i64 = long long;
+int main() {
+    int n;
+    std::cin &gt;&gt; n;
+    std::vector&lt;std::pair&lt;i64, i64&gt;&gt; p(n);
+    for (auto &amp;[a, b] : p) std::cin &gt;&gt; a &gt;&gt; b;
+    std::sort(p.begin(), p.end());
+    i64 P = 0, best = LLONG_MIN, ans = LLONG_MIN;
+    for (auto [a, b] : p) {
+        best = std::max(best, a - P);
+        P += b;
+        ans = std::max(ans, P - a + best);
+    }
+    std::cout &lt;&lt; ans &lt;&lt; &quot;\n&quot;;
+}</code></pre></div></section>
+</article>
+
+<!-- ============================ F ============================ -->
+<article class="prob" id="F" hidden data-name="Exam" data-src="eJOI 2020, день 1" data-tags="DP,LIS,разбор случаев" data-pts="14,12,13,23,16,22*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>$N$ учеников в ряд, у $i$-го результат $A_i$. Любой отрезок из двух и более соседей может «списать»: всем на нём ставится максимум отрезка. Это можно делать сколько угодно раз. Ученику $i$ нужно ровно $B_i$. Найдите максимальное число учеников, которые могут сдать одновременно.</p>
+    <div class="lims"><span>2 ≤ N ≤ 10⁵</span><span>Aᵢ, Bᵢ ≤ 10⁹</span><span>1 с</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Ученик $i$ может получить $B_i$ из «источника» $j$, если $A_j = B_i$ и максимум $A$ между $i$ и $j$ равен $B_i$ (нет «стены» с большим числом).</p>
+    <p>Несколько учеников сдают одновременно ⇔ их источники можно выбрать неубывающими слева направо: стрелки «ученик ← источник» не пересекаются.</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Подзадача 1</span><span class="pts">14 б.</span><span class="lim">N ≤ 10</span></summary><div class="sb">
+      <p>Перебираем маску сдавших. Проверка: слева направо даём каждому самый левый допустимый источник, не левее предыдущего.</p>
+      <div class="why">Жадность верна: более левый источник только ослабляет ограничение для следующих учеников (им нужен источник не левее).</div><span class="cx">O(2ᴺ·N²)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 2</span><span class="pts">12 б.</span><span class="lim">все Bᵢ = x</span></summary><div class="sb">
+      <p>Числа $A_i > x$ — стены. Они режут ряд на куски. Если в куске есть $x$, максимум куска равен $x$, и весь кусок сдаёт сразу. Ответ — суммарная длина кусков, содержащих $x$.</p><span class="cx">O(N)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 3</span><span class="pts">13 б.</span><span class="lim">N ≤ 5000, A строго возрастает</span></summary><div class="sb">
+      <p>Источник может быть только справа (или сам ученик), и он единственный — позиция с $A_j = B_i$. Дальше — длиннейшая неубывающая подпоследовательность источников.</p><span class="cx">O(N²)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 4</span><span class="pts">23 б.</span><span class="lim">N ≤ 10⁵, все Aᵢ различны</span></summary><div class="sb">
+      <p>Источник единственный. Проверяем максимум на отрезке через sparse table, затем длиннейшая неубывающая подпоследовательность источников через бинарный поиск.</p><span class="cx">O(N log N)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 5</span><span class="pts">16 б.</span><span class="lim">N ≤ 200</span></summary><div class="sb">
+      <p>Динамика из подзадачи 6, но $ok(i, j)$ проверяем прямым циклом по отрезку.</p><span class="cx">O(N³)</span></div></details>
+    <details class="sub full"><summary><span class="sn">Подзадача 6</span><span class="pts">22 б.</span><span class="lim">N ≤ 5000</span></summary><div class="sb">
+      <p>Сетка «ученик $i$ × источник $j$»: галочка, если $ok(i, j)$. Нужно выбрать больше всего галочек так, чтобы в строке была не больше одной, а номер столбца сверху вниз не уменьшался. Это динамика как в LCS:</p>
+      <p class="mj">$$dp_{i,j} = \max\big(dp_{i,j-1},\ dp_{i-1,j} + ok(i,j)\big).$$</p>
+      <p>Переход из $dp_{i-1,j}$ (а не $dp_{i-1,j-1}$), потому что несколько учеников могут брать один источник. Строку $ok(i, \cdot)$ — все $j$ сразу — считаем за $O(N)$: идём от $i$ влево и вправо с текущим максимумом и останавливаемся, когда он превысил $B_i$.</p>
+      <div class="why">Для 100 баллов объединяем: при $N \le 5000$ — эта динамика, иначе решение подзадачи 2 или 4.</div>
+      <span class="cx">O(N²) времени, O(N) памяти</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p><b>1. Значения не уменьшаются.</b> Списывание ставит максимум отрезка, а он не меньше любого его элемента.</p>
+    <p><b>2. Нужен источник.</b> Новые числа не появляются, значит итоговое $B_i = A_j$ для некоторого $j$, и это значение прошло через все позиции между $i$ и $j$. Если там есть $A_k > B_i$, на позиции $k$ всегда будет больше $B_i$, и любой отрезок через неё имеет максимум больше $B_i$.</p>
+    <p><b>3. Стрелки не пересекаются.</b> Пусть $i < k$, но источник $k$ левее источника $i$. Перебор трёх вариантов расположения показывает, что тогда $B_i = B_k$, и источники можно поменять местами без пересечения. Например, в примере $A = 3\,2\,5\,2\,2\,4$: чтобы ученик 5 получил 5 от ученика 3, пятёрка проходит через ученика 4 и навсегда портит его.</p>
+    <p><b>4. Этого достаточно.</b> Если источники допустимы и не убывают, списываем в порядке возрастания $B$: каждый отрезок «ученик–источник» целиком. Источник к своему ходу ещё хранит своё значение, а более позднее копирование большего числа не задевает уже сдавших. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>F.cpp · 49 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using i64 = long long;
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int n;
+    std::cin &gt;&gt; n;
+    
+    std::vector&lt;int&gt; a(n), b(n);
+    for (int i = 0; i &lt; n; i++) {
+        std::cin &gt;&gt; a[i];
+    }
+    for (int i = 0; i &lt; n; i++) {
+        std::cin &gt;&gt; b[i];
+    }
+    
+    std::vector&lt;int&gt; dp(n + 1), ndp(n + 1);
+    std::vector&lt;int&gt; ok(n);
+    for (int i = 0; i &lt; n; i++) {
+        std::fill(ok.begin(), ok.end(), 0);
+        for (int j = i, mx = 0; j &gt;= 0; j--) {
+            mx = std::max(mx, a[j]);
+            if (mx &gt; b[i]) {
+                break;
+            }
+            ok[j] = a[j] == b[i];
+        }
+        for (int j = i, mx = 0; j &lt; n; j++) {
+            mx = std::max(mx, a[j]);
+            if (mx &gt; b[i]) {
+                break;
+            }
+            ok[j] = a[j] == b[i];
+        }
+        
+        ndp[0] = 0;
+        for (int j = 0; j &lt; n; j++) {
+            ndp[j + 1] = std::max(ndp[j], dp[j + 1] + ok[j]);
+        }
+        std::swap(dp, ndp);
+    }
+    
+    std::cout &lt;&lt; dp[n] &lt;&lt; &quot;\n&quot;;
+    
+    return 0;
+}</code></pre></div></section>
+</article>
+
+<!-- ============================ G ============================ -->
+<article class="prob" id="G" hidden data-name="Election" data-src="Balkan OI 2018, день 1" data-tags="дерево отрезков,префиксные суммы" data-pts="28,54,18*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>Строка из $N$ голосов «C» (за Капитана) и «T» (за Тони). Голоса считают дважды: слева направо и справа налево. Капитан доволен, если ни в какой момент подсчёта у него не меньше голосов, чем у Тони. Для $Q$ запросов $[L, R]$ (голосуют только фанаты с $L$ по $R$) найдите минимальное число голосов, которые нужно аннулировать.</p>
+    <div class="lims"><span>N, Q ≤ 500 000</span><span>пример: CCCTTTTTTCC → 4, 6, 3</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Положим $T = +1$, $C = -1$. Ответ — лучшая пара непересекающихся префикса и суффикса отрезка (пустые разрешены):</p>
+    <p class="mj">$$\max_{L-1 \le i \le j \le R}\big(\mathrm{pref}(L..i) + \mathrm{suf}(j{+}1..R)\big).$$</p>
+    <p>Для «CCCTTTTTTCC»: пустой префикс плюс суффикс «TTTTTTCC» даёт $6 - 2 = 4$.</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Подзадача 1</span><span class="pts">28 б.</span><span class="lim">N, Q ≤ 2000</span></summary><div class="sb">
+      <p>Жадность: идём слева направо с балансом; если T сделал бы баланс отрицательным — аннулируем его. Затем справа налево по оставшимся голосам — то же самое.</p><span class="cx">O(N·Q)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 2</span><span class="pts">54 б.</span><span class="lim">N, Q ≤ 70 000</span></summary><div class="sb">
+      <p>Для отрезка храним четвёрку $(sum, pre, suf, ans)$, где $pre$ и $suf$ — лучший префикс и суффикс (не меньше 0). Четвёрки склеиваются за O(1) (формулы ниже), поэтому подходит корневая декомпозиция: блоки по $\sqrt N$, запрос собираем из целых блоков и краёв.</p><span class="cx">O((N + Q)·√N)</span></div></details>
+    <details class="sub full"><summary><span class="sn">Подзадача 3</span><span class="pts">18 б.</span><span class="lim">N, Q ≤ 500 000</span></summary><div class="sb">
+      <p>Дерево отрезков на четвёрках. Лист T: $(1, 1, 1, 1)$, лист C: $(-1, 0, 0, 0)$. Склейка $L$ и $R$:</p>
+      <p class="mj">$$pre = \max(L.pre,\ L.sum + R.pre),\quad suf = \max(R.suf,\ R.sum + L.suf),$$ $$ans = \max(L.ans + R.sum,\ L.sum + R.ans,\ L.pre + R.suf).$$</p>
+      <div class="why">Три случая для $ans$: обе границы в $L$ (суффикс захватывает весь $R$), обе в $R$ (префикс захватывает весь $L$), или префикс из $L$ и суффикс из $R$. Склейка не коммутативна — куски собираем строго слева направо.</div>
+      <span class="cx">O((N + Q) log N)</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p><b>Нижняя оценка.</b> Если на префиксе сумма $s > 0$, голосов T там на $s$ больше, и аннулировать нужно хотя бы $s$ голосов T внутри этого префикса. Так же для суффикса. Непересекающиеся префикс и суффикс требуют разных удалений, поэтому нужно не меньше $\mathrm{pref}(i) + \mathrm{suf}(j+1)$.</p>
+    <p><b>Жадность достигает оценки.</b> Пусть правый проход последний раз удалил голос на позиции $y$. На суффиксе $[y, R]$ после всех удалений баланс ровно 0, значит там удалено $\mathrm{suf}(y)$ голосов. Левее $y$ левый проход удалил ровно максимум префикса до $y$. Итого жадность удаляет $\mathrm{pref}(i) + \mathrm{suf}(y)$ — одно из слагаемых формулы, а меньше оценки удалить нельзя. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>G.cpp · 68 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using i64 = long long;
+
+struct Info {
+    int sum = 0;
+    int pre = 0;
+    int suf = 0;
+    int ans = 0;
+};
+
+Info operator+(const Info &amp;a, const Info &amp;b) {
+    Info c;
+    c.sum = a.sum + b.sum;
+    c.pre = std::max(a.pre, a.sum + b.pre);
+    c.suf = std::max(b.suf, b.sum + a.suf);
+    c.ans = std::max({a.ans + b.sum, a.sum + b.ans, a.pre + b.suf});
+    return c;
+}
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int n;
+    std::cin &gt;&gt; n;
+    
+    std::string s;
+    std::cin &gt;&gt; s;
+    
+    int sz = 1;
+    while (sz &lt; n) {
+        sz *= 2;
+    }
+    std::vector&lt;Info&gt; t(2 * sz);
+    for (int i = 0; i &lt; n; i++) {
+        if (s[i] == &#x27;T&#x27;) {
+            t[sz + i] = {1, 1, 1, 1};
+        } else {
+            t[sz + i] = {-1, 0, 0, 0};
+        }
+    }
+    for (int i = sz - 1; i &gt;= 1; i--) {
+        t[i] = t[2 * i] + t[2 * i + 1];
+    }
+    
+    int q;
+    std::cin &gt;&gt; q;
+    
+    while (q--) {
+        int l, r;
+        std::cin &gt;&gt; l &gt;&gt; r;
+        l--;
+        
+        Info L, R;
+        for (l += sz, r += sz; l &lt; r; l /= 2, r /= 2) {
+            if (l &amp; 1) {
+                L = L + t[l++];
+            }
+            if (r &amp; 1) {
+                R = t[--r] + R;
+            }
+        }
+        std::cout &lt;&lt; (L + R).ans &lt;&lt; &quot;\n&quot;;
+    }
+    
+    return 0;
+}</code></pre></div></section>
+</article>
+
+<!-- ============================ H ============================ -->
+<article class="prob" id="H" hidden data-name="Fountain" data-src="eJOI 2020, день 1" data-tags="монотонный стек,двоичные подъёмы" data-pts="30,30,40*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>$N$ резервуаров сверху вниз, у $i$-го диаметр $D_i$ и вместимость $C_i$. Лишняя вода переливается в ближайший ниже резервуар со <i>строго большим</i> диаметром, а если такого нет — в землю (ответ 0). Запросы независимы: в каком резервуаре остановится вода, если налить $V$ литров в резервуар $R$?</p>
+    <div class="lims"><span>N ≤ 10⁵</span><span>Q ≤ 2·10⁵</span><span>Cᵢ ≤ 1000</span><span>Dᵢ, Vᵢ ≤ 10⁹</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Для каждого $i$ найдём $nxt_i$ — ближайший ниже со строго большим диаметром (монотонный стек). Связи $nxt$ образуют дерево с корнем 0 («земля»), и вода из $R$ идёт по пути к корню, заполняя вместимости по очереди.</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Подзадача 1</span><span class="pts">30 б.</span><span class="lim">N ≤ 1000, Q ≤ 2000</span></summary><div class="sb">
+      <p>$nxt_i$ ищем перебором вниз. На запрос идём по пути: пока $V > C_v$, вычитаем $C_v$ и переходим в $nxt_v$. Дошли до 0 — ответ 0.</p><span class="cx">O(N² + Q·N)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 2</span><span class="pts">30 б.</span><span class="lim">Dᵢ &lt; Dᵢ₊₁</span></summary><div class="sb">
+      <p>Тогда $nxt_i = i + 1$, и вода идёт по резервуарам подряд. Префиксные суммы вместимостей и бинарный поиск первого $k \ge R$ с $P_k - P_{R-1} \ge V$; если такого нет — 0.</p><span class="cx">O((N + Q) log N)</span></div></details>
+    <details class="sub full"><summary><span class="sn">Подзадача 3</span><span class="pts">40 б.</span><span class="lim">без ограничений</span></summary><div class="sb">
+      <p>$nxt$ — стеком снизу вверх. Двоичные подъёмы: $up_k(v)$ — вершина на $2^k$ шагов выше, $sum_k(v)$ — суммарная вместимость этих $2^k$ вершин начиная с $v$. На запрос прыгаем на наибольшие $2^k$, у которых $sum < V$, вычитая сумму. У земли вместимость бесконечна.</p>
+      <div class="why">Пример: R = 1, V = 25, путь 1 → 2 → 5 с вместимостями 10, 8, 9. Прыжок на 2 шага: 18 &lt; 25, остаётся 7, мы в 5. Там 9 ≥ 7 — ответ 5.</div>
+      <span class="cx">O((N + Q) log N)</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p>Вода сначала заполняет $R$, излишек по условию попадает в $nxt_R$ (более узкие резервуары между ними она пролетает мимо) и так далее. Так как $nxt_i > i$, циклов нет — это дерево с корнем 0. Вода останавливается в первой вершине пути, где накопленная вместимость $\ge V$; суммы вдоль пути строго растут ($C_i \ge 1$), поэтому её можно найти подъёмами.</p>
+    <p><b>Монотонный стек.</b> Идём снизу вверх. Для $i$ выкидываем из стека всё с диаметром $\le D_i$. Если $j$ выкинули на шаге $i$, то $i$ выше $j$ и $D_i \ge D_j$: для любого резервуара выше $i$ вода сначала встретит $i$, и если ей подходит $j$, то подходит и более близкий $i$. Значит, $j$ больше никогда не станет ответом. Каждый элемент входит и выходит один раз. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>H.cpp · 56 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using i64 = long long;
+
+constexpr int LOG = 17;
+constexpr i64 inf = 1E18;
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int n, q;
+    std::cin &gt;&gt; n &gt;&gt; q;
+    
+    std::vector&lt;int&gt; d(n + 1), c(n + 1);
+    for (int i = 1; i &lt;= n; i++) {
+        std::cin &gt;&gt; d[i] &gt;&gt; c[i];
+    }
+    
+    std::vector up(LOG, std::vector&lt;int&gt;(n + 1));
+    std::vector sum(LOG, std::vector&lt;i64&gt;(n + 1));
+    
+    std::vector&lt;int&gt; stk;
+    for (int i = n; i &gt;= 1; i--) {
+        while (!stk.empty() &amp;&amp; d[stk.back()] &lt;= d[i]) {
+            stk.pop_back();
+        }
+        up[0][i] = stk.empty() ? 0 : stk.back();
+        sum[0][i] = c[i];
+        stk.push_back(i);
+    }
+    sum[0][0] = inf;
+    
+    for (int k = 1; k &lt; LOG; k++) {
+        for (int v = 0; v &lt;= n; v++) {
+            up[k][v] = up[k - 1][up[k - 1][v]];
+            sum[k][v] = std::min(inf, sum[k - 1][v] + sum[k - 1][up[k - 1][v]]);
+        }
+    }
+    
+    while (q--) {
+        int r;
+        i64 v;
+        std::cin &gt;&gt; r &gt;&gt; v;
+        
+        for (int k = LOG - 1; k &gt;= 0; k--) {
+            if (sum[k][r] &lt; v) {
+                v -= sum[k][r];
+                r = up[k][r];
+            }
+        }
+        std::cout &lt;&lt; r &lt;&lt; &quot;\n&quot;;
+    }
+    
+    return 0;
+}</code></pre></div></section>
+</article>
+
+<!-- ============================ I ============================ -->
+<article class="prob" id="I" hidden data-name="Team Coding" data-src="EGOI 2024, день 1" data-tags="деревья,уровни,бинпоиск,корневая оценка" data-pts="12,19,27,23,19*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>Компания — дерево из $N$ сотрудников с корнем 0, у каждого один из $K$ языков. Выбираем лидера $v$: команда — сотрудники его поддерева с тем же языком. Можно менять местами сотрудника поддерева с другим языком и сотрудника вне поддерева с языком лидера, если они на одном уровне; их подчинённые остаются на местах. Найдите максимальный размер команды $P$ и минимальное число обменов $S$ для него.</p>
+    <div class="lims"><span>N ≤ 10⁵</span><span>K ≤ N</span><span>4 с</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Обмен не выходит за уровень, поэтому уровни независимы. Для лидера $v$ с языком $c$ на уровне $d$: $s_d$ — мест в поддереве, $t_d$ — всего людей с языком $c$, $a_d$ — уже в команде. Тогда</p>
+    <p class="mj">$$P(v) = \sum_d \min(s_d, t_d), \qquad S(v) = P(v) - \sum_d a_d.$$</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Подзадача 1</span><span class="pts">12 б.</span><span class="lim">дерево — путь</span></summary><div class="sb">
+      <p>На каждом уровне один человек, и он в поддереве лидера ниже него — обменов нет. Лучший лидер — самый верхний человек самого частого языка. Ответ: «частота» и 0.</p><span class="cx">O(N)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 2</span><span class="pts">19 б.</span><span class="lim">K ≤ 2</span></summary><div class="sb">
+      <p>Для каждого языка сливаем снизу вверх словари «уровень → (s, a)» способом small-to-large и поддерживаем сумму минимумов.</p><span class="cx">O(N log N)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 3</span><span class="pts">27 б.</span><span class="lim">каждый язык ≤ 10 человек</span></summary><div class="sb">
+      <p>Для лидера с языком $c$ важны только уровни, где язык $c$ есть, — их не больше 10. $s_d$ считаем бинпоиском по вершинам уровня $d$ в порядке обхода (поддерево — отрезок $[tin_v, tout_v)$), $a_d$ — перебором.</p><span class="cx">O(10·N log N)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 4</span><span class="pts">23 б.</span><span class="lim">N ≤ 2000</span></summary><div class="sb">
+      <p>Для каждого лидера обходим поддерево и считаем $s_d$, $a_d$; $t_d$ для каждого языка и уровня считаем заранее.</p><span class="cx">O(N²)</span></div></details>
+    <details class="sub full"><summary><span class="sn">Подзадача 5</span><span class="pts">19 б.</span><span class="lim">без ограничений</span></summary><div class="sb">
+      <p><b>Наблюдение 1.</b> Если у $v$ есть предок $u$ с тем же языком, $u$ не хуже: $s_d(u) \ge s_d(v)$ на каждом уровне, значит $P(u) \ge P(v)$, а при равенстве $\sum a(u) \ge \sum a(v)$ и $S(u) \le S(v)$. Поэтому перебираем только «верхних» лидеров — без предка того же языка. Их поддеревья для одного языка не пересекаются.</p>
+      <p><b>Наблюдение 2.</b> Уровни без языка $c$ дают $t_d = 0$. Для лидера перебираем только уровни своего языка внутри поддерева, как в подзадаче 3: $s_d$ и $a_d$ — бинпоиском.</p>
+      <div class="why">Оценка: лёгкий язык ($cnt \le \sqrt N$) — не больше $cnt$ лидеров по $cnt$ уровней, в сумме $\le N\sqrt N$; у тяжёлого языка поддеревья верхних лидеров не пересекаются, работа $\le N$. Итого $O(N\sqrt N \log N)$, на тестах с $N = 10^5$ около 0,15 с. В авторском разборе тяжёлые языки обрабатывают слиянием small-to-large.</div>
+      <span class="cx">O(N√N log N)</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p><b>Верхняя граница.</b> На уровне $d$ в команде не больше $s_d$ человек (столько мест) и не больше $t_d$ (столько людей с языком $c$).</p>
+    <p><b>Достижимость.</b> Пока $a_d < \min(s_d, t_d)$, обмен есть: в поддереве есть человек с другим языком ($a_d < s_d$), а снаружи — человек с языком $c$ ($a_d < t_d$). Каждый обмен даёт ровно +1, поэтому на уровне собирается $\min(s_d, t_d)$, и нужно ровно $\min(s_d, t_d) - a_d$ обменов. Лидер в обменах не участвует. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>I.cpp · 111 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using i64 = long long;
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int n, k;
+    std::cin &gt;&gt; n &gt;&gt; k;
+    
+    std::vector&lt;int&gt; lang(n);
+    for (int i = 0; i &lt; n; i++) {
+        std::cin &gt;&gt; lang[i];
+    }
+    
+    std::vector&lt;std::vector&lt;int&gt;&gt; adj(n);
+    for (int i = 1; i &lt; n; i++) {
+        int b;
+        std::cin &gt;&gt; b;
+        adj[b].push_back(i);
+    }
+    
+    std::vector&lt;int&gt; dep(n), tin(n), tout(n), maxd(n), ord;
+    std::vector&lt;int&gt; onPath(k);
+    std::vector&lt;bool&gt; top(n);
+    int timer = 0;
+    std::vector&lt;std::pair&lt;int, int&gt;&gt; stk{{0, 0}};
+    while (!stk.empty()) {
+        auto &amp;[v, i] = stk.back();
+        if (i == 0) {
+            tin[v] = timer++;
+            ord.push_back(v);
+            maxd[v] = dep[v];
+            top[v] = onPath[lang[v]] == 0;
+            onPath[lang[v]]++;
+        }
+        if (i &lt; int(adj[v].size())) {
+            int u = adj[v][i++];
+            dep[u] = dep[v] + 1;
+            stk.push_back({u, 0});
+        } else {
+            tout[v] = timer;
+            onPath[lang[v]]--;
+            int x = v;
+            stk.pop_back();
+            if (!stk.empty()) {
+                int p = stk.back().first;
+                maxd[p] = std::max(maxd[p], maxd[x]);
+            }
+        }
+    }
+    
+    int D = *std::max_element(dep.begin(), dep.end()) + 1;
+    std::vector&lt;std::vector&lt;int&gt;&gt; level(D);
+    for (int v : ord) {
+        level[dep[v]].push_back(tin[v]);
+    }
+    
+    std::vector&lt;std::vector&lt;int&gt;&gt; cd(k);
+    std::vector&lt;std::vector&lt;std::vector&lt;int&gt;&gt;&gt; ct(k);
+    {
+        std::vector&lt;std::vector&lt;int&gt;&gt; byLang(k);
+        for (int v : ord) {
+            byLang[lang[v]].push_back(v);
+        }
+        for (int c = 0; c &lt; k; c++) {
+            auto &amp;a = byLang[c];
+            std::stable_sort(a.begin(), a.end(), [&amp;](int x, int y) {
+                return dep[x] &lt; dep[y];
+            });
+            for (int v : a) {
+                if (cd[c].empty() || cd[c].back() != dep[v]) {
+                    cd[c].push_back(dep[v]);
+                    ct[c].emplace_back();
+                }
+                ct[c].back().push_back(tin[v]);
+            }
+        }
+    }
+    
+    auto count = [&amp;](const std::vector&lt;int&gt; &amp;a, int l, int r) {
+        return int(std::lower_bound(a.begin(), a.end(), r) - std::lower_bound(a.begin(), a.end(), l));
+    };
+    
+    int bestP = -1, bestS = 0;
+    for (int v = 0; v &lt; n; v++) {
+        if (!top[v]) {
+            continue;
+        }
+        int c = lang[v];
+        int P = 0, A = 0;
+        int j = std::lower_bound(cd[c].begin(), cd[c].end(), dep[v]) - cd[c].begin();
+        for (; j &lt; int(cd[c].size()) &amp;&amp; cd[c][j] &lt;= maxd[v]; j++) {
+            int d = cd[c][j];
+            int s = count(level[d], tin[v], tout[v]);
+            int t = ct[c][j].size();
+            P += std::min(s, t);
+            A += count(ct[c][j], tin[v], tout[v]);
+        }
+        int S = P - A;
+        if (P &gt; bestP || (P == bestP &amp;&amp; S &lt; bestS)) {
+            bestP = P;
+            bestS = S;
+        }
+    }
+    
+    std::cout &lt;&lt; bestP &lt;&lt; &quot; &quot; &lt;&lt; bestS &lt;&lt; &quot;\n&quot;;
+    
+    return 0;
+}</code></pre></div></section>
+</article>
+
+<!-- ============================ J ============================ -->
+<article class="prob" id="J" hidden data-name="Gift Boxes" data-src="EGOI 2025, день 1" data-tags="два указателя,подсчёт" data-pts="8,11,14,21,22,24*">
+  <section class="stmt"><h2>Условие</h2>
+    <p>В ряду $N$ участников из $T$ команд (номера $0..T-1$, каждая встречается). Нужно пропустить ровно один отрезок $[\ell, r]$ подряд стоящих так, чтобы среди оставшихся каждая команда встречалась не больше одного раза, а пропущенных было как можно меньше. Выведите $\ell$ и $r$ (с нуля); подходит любой оптимальный ответ.</p>
+    <div class="lims"><span>1 ≤ T &lt; N ≤ 500 000</span><span>2 с</span></div>
+  </section>
+  <section><h2>Ключевая идея</h2><div class="key">
+    <p>Оставшиеся — префикс $[0, \ell)$ и суффикс $(r, N)$. Если $r(\ell)$ — лучший $r$ для данного $\ell$, то $r(\ell)$ не убывает: при росте префикса суффикс может только укоротиться. Поэтому работают два указателя.</p>
+  </div></section>
+  <section><h2>Подзадачи</h2><div class="subs">
+    <details class="sub"><summary><span class="sn">Подзадача 1</span><span class="pts">8 б.</span><span class="lim">N = T + 1</span></summary><div class="sb">
+      <p>Повторяется ровно одна команда — на позициях $p < q$. Пропускаем одного из них: ответ «p p».</p><span class="cx">O(N)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 2</span><span class="pts">11 б.</span><span class="lim">N = 2T, каждая команда раз в каждой половине</span></summary><div class="sb">
+      <p>Останется не больше $T$ человек, значит пропустить нужно $\ge T$. Пропуск первой половины подходит: ответ «0 T−1».</p><span class="cx">O(1)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 3</span><span class="pts">14 б.</span><span class="lim">N ≤ 500</span></summary><div class="sb">
+      <p>Перебираем все пары $(\ell, r)$ и проверяем оставшихся массивом счётчиков.</p><span class="cx">O(N³)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 4</span><span class="pts">21 б.</span><span class="lim">N = 2T, каждая команда ровно дважды</span></summary><div class="sb">
+      <p>Пропустить нужно ровно $T$ подряд, и окно должно содержать хотя бы одного человека каждой команды. Сдвигаем окно длины $T$ и поддерживаем число команд, у которых обе позиции вне окна.</p><span class="cx">O(N)</span></div></details>
+    <details class="sub"><summary><span class="sn">Подзадача 5</span><span class="pts">22 б.</span><span class="lim">N ≤ 5000</span></summary><div class="sb">
+      <p>Для каждого $\ell$ с префиксом без повторов идём $r$ от конца влево, добавляя людей в суффикс, пока нет конфликта.</p><span class="cx">O(N²)</span></div></details>
+    <details class="sub full"><summary><span class="sn">Подзадача 6</span><span class="pts">24 б.</span><span class="lim">N ≤ 500 000</span></summary><div class="sb">
+      <p>Старт: $\ell = 0$, $r$ — позиция перед самым длинным суффиксом без повторов. Добавляя человека $\ell$ в префикс: если его команда уже в префиксе — стоп; иначе сдвигаем $r$ вправо, пока эта команда есть в суффиксе. Каждый раз запоминаем пропуск $[\ell+1, r]$.</p>
+      <div class="why">Пример 5 3 1 6 0 5 4 6 2 0: пропуски по ходу — [0,4], [1,5], [2,5], [3,5], [4,7], [5,9]. Лучший — [3,5] длины 3.</div>
+      <span class="cx">O(N)</span></div></details>
+  </div></section>
+  <section><h2>Почему это верно</h2><div class="proof">
+    <p>Пусть $\ell < \ell'$ и пара $(\ell', r)$ подходит. Оставшиеся при $(\ell, r)$ — подмножество оставшихся при $(\ell', r)$, а в подмножестве набора без повторов повторов нет. Значит, $r(\ell) \le r(\ell')$, и указатель $r$ двигается только вправо. Каждый указатель проходит ряд не больше одного раза. ∎</p>
+  </div></section>
+  <section><h2>Решение на C++</h2><div class="codebox"><div class="codebar"><span>J.cpp · 46 строк</span><button type="button">Копировать</button></div><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+using i64 = long long;
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+    int t, n;
+    std::cin &gt;&gt; t &gt;&gt; n;
+    
+    std::vector&lt;int&gt; a(n);
+    for (int i = 0; i &lt; n; i++) {
+        std::cin &gt;&gt; a[i];
+    }
+    
+    std::vector&lt;int&gt; cnt(t);
+    int r = n - 1;
+    while (cnt[a[r]] == 0) {
+        cnt[a[r]]++;
+        r--;
+    }
+    
+    std::vector&lt;bool&gt; pre(t);
+    int bl = 0, br = r;
+    for (int l = 0; l &lt; n; l++) {
+        int x = a[l];
+        if (pre[x]) {
+            break;
+        }
+        while (cnt[x] &gt; 0) {
+            r++;
+            cnt[a[r]]--;
+        }
+        cnt[x]++;
+        pre[x] = true;
+        if (r - (l + 1) &lt; br - bl) {
+            bl = l + 1;
+            br = r;
+        }
+    }
+    
+    std::cout &lt;&lt; bl &lt;&lt; &quot; &quot; &lt;&lt; br &lt;&lt; &quot;\n&quot;;
+    
+    return 0;
+}</code></pre></div></section>
+</article>
+  </main>
+</div>
+
+<script src="js/mathjax-config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
